@@ -22,25 +22,25 @@ if not IS_CELERY:
   # Bend the Django cache to use the redis container
   CACHES["default"]["LOCATION"] = "redis://cathapi-redis:6379/1"
 
-  '''
   DATABASES = {
       'default': {
           'ENGINE': 'django.db.backends.postgresql_psycopg2',
-          'NAME': config('PG_NAME', default='cathapi', cast=str),
-          'USER': config('PG_USER', default='cathapiuser', cast=str),
+          'NAME': config('POSTGRES_DB', default='cathapi', cast=str),
+          'USER': config('PG_USER', default='postgres', cast=str),#default='cathapiuser', cast=str),
           'PASSWORD': config('POSTGRES_PASSWORD', cast=str),
           'HOST': config('PG_HOST', default='postgres', cast=str),
           'PORT': config('PG_PORT', default=5432, cast=int),
       }
    }
-  '''
 
+  '''
   DATABASES = {
       'default': {
           'ENGINE': 'django.db.backends.sqlite3',
           'NAME': os.path.join('/cathapi-data', 'db.sqlite3'),
       }
   }
+  '''
 
   INSTALLED_APPS += [
       #    'debug_toolbar',

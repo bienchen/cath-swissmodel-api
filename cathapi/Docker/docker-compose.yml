@@ -10,9 +10,14 @@ version: "3.5"
 #
 # Please note: Environment variables used by this Docker Compose setup are
 #              spawned from a '.env' file. This file needs to be in the same
-#              directory as the docker-compose command is run. Variables in
-#              this file are defined by '<VARIABLE NAME>=<VALUE>'. Variables
-#              needed are:
+#              directory as the docker-compose command is run. Variables in this
+#              file are defined by '<VARIABLE NAME>=<VALUE>'. Variables needed
+#              are:
+#                POSTGRES_PASSWORD - password for the superuser of Postgres, not
+#                                    the password of the Django user accessing
+#                                    the database
+#                POSTGRES_DB - name of the database that will be created for
+#                              the CATH-SM-API
 
 volumes:
   db-store:
@@ -40,6 +45,7 @@ services:
     environment:
       - CATHAPI_DEBUG=CONTAINER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DB
     volumes:
       - www-static:/static
     command: /cathapi/entrypoint.sh gunicorn cathapi.wsgi -b 0.0.0.0:8080
@@ -54,6 +60,7 @@ services:
       shm_size: '256MB'
     environment:
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DB
     volumes:
       - db-store:/var/lib/postgresql/data/
 
