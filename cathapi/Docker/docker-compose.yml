@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.5"
 
 # Build all images:
 #
@@ -8,9 +8,14 @@ version: "3.3"
 #
 # $ docker-compose -f Docker/docker-compose.yml up
 #
+# Please note: Environment variables used by this Docker Compose setup are
+#              spawned from a '.env' file. This file needs to be in the same
+#              directory as the docker-compose command is run. Variables in
+#              this file are defined by '<VARIABLE NAME>=<VALUE>'. Variables
+#              needed are:
 
 volumes:
-  django-sqlite-db:
+  db-store:
   www-static:
   www-logs:
 
@@ -34,8 +39,8 @@ services:
       - postgres
     environment:
       - CATHAPI_DEBUG=CONTAINER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
     volumes:
-      - django-sqlite-db:/cathapi-data
       - www-static:/static
     command: /cathapi/entrypoint.sh gunicorn cathapi.wsgi -b 0.0.0.0:8080
 
@@ -43,6 +48,14 @@ services:
     restart: always
     build:
       context: ./postgres/
+      # Increase /dev/shm as hinted by the Docker Library page for Postgres
+      # https://github.com/docker-library/docs/tree/master/postgres/
+      # "shm_size" needs Docker-Compose v.3.5, before this file was 3.3.
+      shm_size: '256MB'
+    environment:
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+    volumes:
+      - db-store:/var/lib/postgresql/data/
 
   nginx:
     restart: always
@@ -65,4 +78,8 @@ services:
       - cathapi-redis
     environment:
       - CATHAPI_DEBUG=CONTAINER
+      - I_AM_CELERY=1
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
     command: celery -A cathapi worker
+
+#  LocalWords:  env
