@@ -1,4 +1,5 @@
-FROM python:3.7.3-slim-stretch
+ARG CATHSMAPI_CODEBASE=fromlocal
+FROM python:3.7.3-slim-stretch as cath_sm_api_basis
 
 # To build it outside of docker-compose, in the toplevel directory of the repository,
 # run:
@@ -8,6 +9,10 @@ FROM python:3.7.3-slim-stretch
 # where
 # - "-t cathapi" just defines a name/ tag
 #
+# By default, the images is created using a local checkout of the Git repo. To
+# let Docker check out the repo for you during build time, start the build
+# command using `--build-arg CATHSMAPI_CODEBASE=fromgitrepo`.
+#
 # Be aware: some (secret) environment variables are passed by an .env file
 #           this is copied here from cathapi/Docker/cathapi/.env .
 
@@ -15,8 +20,21 @@ ENV SRC_DIR="/cathapi"
 RUN /bin/mkdir $SRC_DIR
 WORKDIR $SRC_DIR
 
-# Get API code inside the image
-COPY ./ $SRC_DIR
+# Get API code inside the image - we can either use a local checkout of the
+# Git repository by using CATHSMAPI_CODEBASE=fromlocal or check out the Git repo
+# during build time by CATHSMAPI_CODEBASE=fromgitrepo. Due to the use of the
+# "ONBUILD" instruction, copying files from the Docker build context OR
+# checkout of the Git repo is ONLY executed on what ever
+# "FROM build_${CATHSMAPI_CODEBASE}" calls. That is, if you want to build
+# containers and just have this Dockerfile lying around in your home directory,
+# no files from your hard drive will be copied inside the image.
+FROM cath_sm_api_basis as build_fromlocal
+ONBUILD COPY ./ $SRC_DIR
+
+#FROM cath_sm_api_basis as build_FROMGITREPO
+#ONBUILD RUN echo "I don't copy"
+
+FROM build_${CATHSMAPI_CODEBASE}
 
 # Install system dependencies
 RUN apt-get update && \
@@ -68,3 +86,5 @@ USER cathapi:users
 # after every start of the container.
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
+
+# LocalWords:  repo arg CATHSMAPI CODEBASE fromgitrepo fromlocal ONBUILD

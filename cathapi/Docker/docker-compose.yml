@@ -49,6 +49,8 @@ services:
     build:
       context: ../
       dockerfile: Docker/cathapi/Dockerfile
+      args:
+        - CATHSMAPI_CODEBASE=$CATHSMAPI_CODEBASE
     depends_on:
       - cathapi-redis
       - postgres
@@ -96,6 +98,8 @@ services:
     build:
       context: ../
       dockerfile: Docker/cathapi/Dockerfile
+      args:
+        - CATHSMAPI_CODEBASE=$CATHSMAPI_CODEBASE
     depends_on:
       - cathapi-redis
     environment:
