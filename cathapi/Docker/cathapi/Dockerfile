@@ -11,12 +11,12 @@ FROM python:3.7.3-slim-stretch
 # Be aware: some (secret) environment variables are passed by an .env file
 #           this is copied here from cathapi/Docker/cathapi/.env .
 
-# Get API code inside the image
 ENV SRC_DIR="/cathapi"
 RUN /bin/mkdir $SRC_DIR
-COPY ./ $SRC_DIR
-
 WORKDIR $SRC_DIR
+
+# Get API code inside the image
+COPY ./ $SRC_DIR
 
 # Install system dependencies
 RUN apt-get update && \
