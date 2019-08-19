@@ -18,6 +18,11 @@ version: "3.5"
 #                                    the database
 #                POSTGRES_DB - name of the database that will be created for
 #                              the CATH-SM-API
+#                DJANGO_DB_USR - dedicated datbase user for the Django app,
+#                                postgres will create it in the database on
+#                                first startup, Django uses it to log into the
+#                                database
+#                DJANGO_DB_PW - password for the dedicated database user
 
 volumes:
   db-store:
@@ -61,6 +66,8 @@ services:
     environment:
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
       - POSTGRES_DB=$POSTGRES_DB
+      - DJANGO_DB_USR=$DJANGO_DB_USR
+      - DJANGO_DB_PW=$DJANGO_DB_PW
     volumes:
       - db-store:/var/lib/postgresql/data/
 

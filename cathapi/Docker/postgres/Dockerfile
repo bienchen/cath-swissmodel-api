@@ -6,6 +6,6 @@ FROM postgres:11.4-alpine
 USER postgres
 
 # logs
-# make sure it does not run as root
 # create cathapi db user with correct permissions
+# make sure it does not run as root
 #/var/lib/postgresql/data/postgresql.conf
