@@ -93,7 +93,6 @@ services:
     environment:
       - CATHAPI_DEBUG=CONTAINER
       - I_AM_CELERY=1
-      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
     command: celery -A cathapi worker
 
 #  LocalWords:  env
