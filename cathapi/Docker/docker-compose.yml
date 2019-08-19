@@ -23,6 +23,11 @@ version: "3.5"
 #                                first startup, Django uses it to log into the
 #                                database
 #                DJANGO_DB_PW - password for the dedicated database user
+#                DJANGO_DB_ADMIN_USR - The administrative user for Django, the
+#                                      one which would normally go into
+#                                      `manage.py createsuperuser`
+#                DJANGO_DB_ADMIN_PW - password for the Django superuser
+#                DJANGO_DB_ADMIN_ML - mail address for the Django superuser
 
 volumes:
   db-store:
@@ -51,6 +56,9 @@ services:
       - CATHAPI_DEBUG=CONTAINER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
       - POSTGRES_DB=$POSTGRES_DB
+      - DJANGO_DB_ADMIN_USR=$DJANGO_DB_ADMIN_USR
+      - DJANGO_DB_ADMIN_PW=$DJANGO_DB_ADMIN_PW
+      - DJANGO_DB_ADMIN_ML=$DJANGO_DB_ADMIN_ML
     volumes:
       - www-static:/static
     command: /cathapi/entrypoint.sh gunicorn cathapi.wsgi -b 0.0.0.0:8080
@@ -95,4 +103,4 @@ services:
       - I_AM_CELERY=1
     command: celery -A cathapi worker
 
-#  LocalWords:  env
+#  LocalWords:  env DJANGO USR Django py createsuperuser
