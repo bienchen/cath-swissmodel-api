@@ -37,6 +37,11 @@ ONBUILD RUN apt-get update && \
             /bin/rm -rf /var/lib/apt/lists/* && \
             /usr/bin/git clone https://github.com/bienchen/cath-swissmodel-api.git \
                                /tmp/cath-swissmodel-api.git && \
+            if test -z "X$CATHSMAPI_GITTAG"; then \
+              cd /tmp/cath-swissmodel-api.git/cathapi && \
+              git checkout $CATHSMAPI_GITTAG && \
+              cd /; \
+            fi && \
             /bin/mv /tmp/cath-swissmodel-api.git/cathapi $SRC_DIR && \
             /bin/rm -rf rm /tmp/cath-swissmodel-api.git && \
             apt-get purge -y --auto-remove git
@@ -73,8 +78,6 @@ RUN /bin/date | /usr/bin/md5sum > secret_key.txt
 #RUN /usr/local/bin/pytest
 
 COPY Docker/cathapi/entrypoint.sh $SRC_DIR
-
-COPY Docker/cathapi/.env $SRC_DIR
 
 # Create dedicated user
 RUN adduser --system --ingroup users cathapi && \

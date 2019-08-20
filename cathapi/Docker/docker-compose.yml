@@ -57,6 +57,7 @@ services:
       dockerfile: Docker/cathapi/Dockerfile
       args:
         - CATHSMAPI_CODEBASE=$CATHSMAPI_CODEBASE
+        - CATHSMAPI_GITTAG=$CATHSMAPI_GITTAG
     depends_on:
       - cathapi-redis
       - postgres
@@ -106,6 +107,7 @@ services:
       dockerfile: Docker/cathapi/Dockerfile
       args:
         - CATHSMAPI_CODEBASE=$CATHSMAPI_CODEBASE
+        - CATHSMAPI_GITTAG=$CATHSMAPI_GITTAG
     depends_on:
       - cathapi-redis
     environment:
