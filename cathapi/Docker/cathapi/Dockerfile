@@ -17,8 +17,6 @@ FROM python:3.7.3-slim-stretch as cath_sm_api_basis
 #           this is copied here from cathapi/Docker/cathapi/.env .
 
 ENV SRC_DIR="/cathapi"
-RUN /bin/mkdir $SRC_DIR
-WORKDIR $SRC_DIR
 
 # Get API code inside the image - we can either use a local checkout of the
 # Git repository by using CATHSMAPI_CODEBASE=fromlocal or check out the Git repo
@@ -29,12 +27,23 @@ WORKDIR $SRC_DIR
 # containers and just have this Dockerfile lying around in your home directory,
 # no files from your hard drive will be copied inside the image.
 FROM cath_sm_api_basis as build_fromlocal
+ONBUILD RUN /bin/mkdir $SRC_DIR
 ONBUILD COPY ./ $SRC_DIR
 
-#FROM cath_sm_api_basis as build_FROMGITREPO
-#ONBUILD RUN echo "I don't copy"
+FROM cath_sm_api_basis as build_fromgitrepo
+ONBUILD RUN apt-get update && \
+            apt-get install -y --no-install-recommends \
+            git && \
+            /bin/rm -rf /var/lib/apt/lists/* && \
+            /usr/bin/git clone https://github.com/bienchen/cath-swissmodel-api.git \
+                               /tmp/cath-swissmodel-api.git && \
+            /bin/mv /tmp/cath-swissmodel-api.git/cathapi $SRC_DIR && \
+            /bin/rm -rf rm /tmp/cath-swissmodel-api.git && \
+            apt-get purge -y --auto-remove git
 
 FROM build_${CATHSMAPI_CODEBASE}
+
+WORKDIR $SRC_DIR
 
 # Install system dependencies
 RUN apt-get update && \

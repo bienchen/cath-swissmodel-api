@@ -23,11 +23,17 @@ version: "3.5"
 #                                first startup, Django uses it to log into the
 #                                database
 #                DJANGO_DB_PW - password for the dedicated database user
-#                DJANGO_DB_ADMIN_USR - The administrative user for Django, the
+#                DJANGO_DB_ADMIN_USR - the administrative user for Django, the
 #                                      one which would normally go into
 #                                      `manage.py createsuperuser`
 #                DJANGO_DB_ADMIN_PW - password for the Django superuser
 #                DJANGO_DB_ADMIN_ML - mail address for the Django superuser
+#                CATHSMAPI_CODEBASE - there is a default for that one, it
+#                                     switches between using a local checkout
+#                                     of the Git repository or fetch a new one
+#                                     to build images; 'fromlocal' (the default)
+#                                     uses the local checkout, 'fromgitrepo'
+#                                     clones the repo during build.
 
 volumes:
   db-store:
@@ -107,4 +113,5 @@ services:
       - I_AM_CELERY=1
     command: celery -A cathapi worker
 
-#  LocalWords:  env DJANGO USR Django py createsuperuser
+#  LocalWords:  env DJANGO USR Django py createsuperuser CATHSMAPI CODEBASE
+#  LocalWords:  fromlocal fromgitrepo repo
