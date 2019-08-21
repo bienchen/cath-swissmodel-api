@@ -34,6 +34,9 @@ version: "3.5"
 #                                     to build images; 'fromlocal' (the default)
 #                                     uses the local checkout, 'fromgitrepo'
 #                                     clones the repo during build.
+#                CATHSMAPI_GITTAG - If CATHSMAPI_CODEBASE=fromgitrepo,
+#                                   determines the branch/ tag to be used from
+#                                   the Git repository
 
 volumes:
   db-store:
@@ -116,4 +119,4 @@ services:
     command: celery -A cathapi worker
 
 #  LocalWords:  env DJANGO USR Django py createsuperuser CATHSMAPI CODEBASE
-#  LocalWords:  fromlocal fromgitrepo repo
+#  LocalWords:  fromlocal fromgitrepo repo GITTAG
