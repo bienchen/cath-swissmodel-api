@@ -1,5 +1,5 @@
 ARG CATHSMAPI_CODEBASE=fromlocal
-FROM python:3.7.3-slim-stretch as cath_sm_api_basis
+FROM python:3.7.4-slim-buster as cath_sm_api_basis
 
 # To build it outside of docker-compose, in the toplevel directory of the repository,
 # run:
@@ -37,7 +37,7 @@ ONBUILD RUN apt-get update && \
             /bin/rm -rf /var/lib/apt/lists/* && \
             /usr/bin/git clone https://github.com/bienchen/cath-swissmodel-api.git \
                                /tmp/cath-swissmodel-api.git && \
-            if test -z "X$CATHSMAPI_GITTAG"; then \
+            if test -z "$CATHSMAPI_GITTAG"; then \
               cd /tmp/cath-swissmodel-api.git/cathapi && \
               git checkout $CATHSMAPI_GITTAG && \
               cd /; \
