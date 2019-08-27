@@ -5,8 +5,6 @@ FROM postgres:11.4-alpine
 
 COPY 10-create-django-user.sql /docker-entrypoint-initdb.d/
 
-#COPY pg_hba.conf /var/lib/postgresql/data/
-
 COPY postgresql.conf /
 
 USER postgres
