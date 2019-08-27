@@ -8,7 +8,3 @@ COPY 10-create-django-user.sql /docker-entrypoint-initdb.d/
 COPY postgresql.conf /
 
 USER postgres
-
-# logs
-# create cathapi db user with correct permissions
-#/var/lib/postgresql/data/postgresql.conf
