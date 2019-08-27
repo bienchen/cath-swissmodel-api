@@ -22,7 +22,15 @@ version: "3.5"
 #                                postgres will create it in the database on
 #                                first startup, Django uses it to log into the
 #                                database
-#                DJANGO_DB_PW - password for the dedicated database user
+#                DJANGO_DB_PW - Password for the dedicated database user as
+#                               scram-sha-256 hash. to generate a hash for a
+#                               password, set up a mock-up PostgreSQL database,
+#                               set encryption to scram-sha-256 and create a
+#                               user with DJANGO_DB_USR and DJANGO_DB_CLR_PW.
+#                               Then run
+#                               `select usename,passwd from PG_SHADOW;`.
+#                DJANGO_DB_CLR_PW - Cleartext password for the dedicated
+#                                   database user
 #                DJANGO_DB_ADMIN_USR - the administrative user for Django, the
 #                                      one which would normally go into
 #                                      `manage.py createsuperuser`
@@ -66,11 +74,12 @@ services:
       - postgres
     environment:
       - CATHAPI_DEBUG=CONTAINER
-      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
       - POSTGRES_DB=$POSTGRES_DB
       - DJANGO_DB_ADMIN_USR=$DJANGO_DB_ADMIN_USR
       - DJANGO_DB_ADMIN_PW=$DJANGO_DB_ADMIN_PW
       - DJANGO_DB_ADMIN_ML=$DJANGO_DB_ADMIN_ML
+      - DJANGO_DB_USR=$DJANGO_DB_USR
+      - DJANGO_DB_CLR_PW=$DJANGO_DB_CLR_PW
     volumes:
       - www-static:/static
     command: /cathapi/entrypoint.sh gunicorn cathapi.wsgi -b 0.0.0.0:8080
@@ -88,8 +97,13 @@ services:
       - POSTGRES_DB=$POSTGRES_DB
       - DJANGO_DB_USR=$DJANGO_DB_USR
       - DJANGO_DB_PW=$DJANGO_DB_PW
+      - POSTGRES_INITDB_ARGS=--auth=scram-sha-256
     volumes:
       - db-store:/var/lib/postgresql/data/
+    entrypoint:
+      - docker-entrypoint.sh
+      - -c
+      - 'config_file=/postgresql.conf'
 
   nginx:
     restart: always
@@ -119,4 +133,5 @@ services:
     command: celery -A cathapi worker
 
 #  LocalWords:  env DJANGO USR Django py createsuperuser CATHSMAPI CODEBASE
-#  LocalWords:  fromlocal fromgitrepo repo GITTAG
+#  LocalWords:  fromlocal fromgitrepo repo GITTAG sha PostgreSQL CLR usename
+#  LocalWords:  passwd

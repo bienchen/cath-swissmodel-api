@@ -26,8 +26,8 @@ if not IS_CELERY:
       'default': {
           'ENGINE': 'django.db.backends.postgresql_psycopg2',
           'NAME': config('POSTGRES_DB', default='cathapi', cast=str),
-          'USER': config('PG_USER', default='postgres', cast=str),#default='cathapiuser', cast=str),
-          'PASSWORD': config('POSTGRES_PASSWORD', cast=str),
+          'USER': config('DJANGO_DB_USR', default='cathapiuser', cast=str),
+          'PASSWORD': config('DJANGO_DB_CLR_PW', cast=str),
           'HOST': config('PG_HOST', default='postgres', cast=str),
           'PORT': config('PG_PORT', default=5432, cast=int),
       }
