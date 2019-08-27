@@ -17,7 +17,7 @@ IS_CELERY = config('I_AM_CELERY', default=False, cast=bool)
 
 if not IS_CELERY:
   # These settings are only relevant for Django instances
-  DEBUG = True
+  DEBUG = False
 
   # Bend the Django cache to use the redis container
   CACHES["default"]["LOCATION"] = "redis://cathapi-redis:6379/1"
@@ -33,23 +33,8 @@ if not IS_CELERY:
       }
    }
 
-  '''
-  DATABASES = {
-      'default': {
-          'ENGINE': 'django.db.backends.sqlite3',
-          'NAME': os.path.join('/cathapi-data', 'db.sqlite3'),
-      }
-  }
-  '''
-
-  INSTALLED_APPS += [
-      #    'debug_toolbar',
-  ]
-
   STATICFILES_DIRS = [
       os.path.join('static/'),
   ]
 
   STATIC_ROOT = '/static'
-
-  #MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]
